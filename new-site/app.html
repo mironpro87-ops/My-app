@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <title>Кабинет риелтора</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body class="app-page">
+  <header class="app-header">
+    <a class="app-header__back" href="index.html">← На главную</a>
+    <h1 class="app-header__title">Кабинет риелтора</h1>
+    <span class="app-header__status" id="access-status" hidden></span>
+  </header>
+
+  <div id="app-content">
+
+  <nav class="app-tabs" aria-label="Разделы кабинета">
+    <button class="app-tab is-active" id="tab-properties-btn" type="button" aria-selected="true">Объекты</button>
+    <button class="app-tab" id="tab-deals-btn" type="button" aria-selected="false">Сделки</button>
+    <button class="app-tab" id="tab-yandex-btn" type="button" aria-selected="false">Яндекс Карты</button>
+    <button class="app-tab" id="tab-cian-btn" type="button" aria-selected="false">Циан</button>
+  </nav>
+
+  <main class="app-main">
+    <section id="tab-properties">
+      <div class="app-toolbar">
+        <label class="filter">
+          <span class="filter__label">Комнаты</span>
+          <select class="field__input" id="filter-rooms">
+            <option value="">Все</option>
+            <option value="0">Студия</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4+</option>
+          </select>
+        </label>
+
+        <label class="filter">
+          <span class="filter__label">Бюджет до, ₽</span>
+          <input class="field__input" id="filter-budget" type="number" min="0" placeholder="Например, 15000000" />
+        </label>
+
+        <label class="filter">
+          <span class="filter__label">Район</span>
+          <select class="field__input" id="filter-district">
+            <option value="">Все районы</option>
+          </select>
+        </label>
+
+        <button class="btn btn-primary app-toolbar__action" id="add-property" type="button">Добавить объект</button>
+      </div>
+
+      <div class="property-grid" id="properties-list"></div>
+      <p class="app-empty" id="properties-empty" hidden></p>
+    </section>
+
+    <section id="tab-deals" hidden>
+      <div class="app-toolbar app-toolbar--end">
+        <button class="btn btn-primary" id="add-deal" type="button">Добавить сделку</button>
+      </div>
+
+      <div class="deal-list" id="deals-list"></div>
+      <p class="app-empty" id="deals-empty" hidden></p>
+    </section>
+
+    <section id="tab-yandex" hidden>
+      <div class="map-tab">
+        <div class="map-tab__head">
+          <h2 class="map-tab__title">Яндекс Карты</h2>
+          <a
+            class="map-tab__link"
+            href="https://yandex.ru/maps/?ll=37.617700%2C55.755800&z=11"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Открыть на Яндексе</a>
+        </div>
+        <div class="map-tab__frame">
+          <iframe
+            src="https://yandex.ru/map-widget/v1/?ll=37.617700%2C55.755800&z=11"
+            title="Яндекс Карта Москвы"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-cian" hidden>
+      <div class="map-tab">
+        <div class="map-tab__head">
+          <h2 class="map-tab__title">Циан</h2>
+          <a
+            class="map-tab__link"
+            href="https://www.cian.ru/map/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Открыть на Циан</a>
+        </div>
+
+        <div class="map-tab__fallback">
+          <h3 class="map-tab__fallback-title">Циан не разрешает встраивать карту на другие сайты</h3>
+          <p class="map-tab__fallback-text">
+            Карта откроется в новой вкладке на сайте Циан. Так работает защита Циан от встраивания.
+          </p>
+          <a
+            class="btn btn-primary"
+            href="https://www.cian.ru/map/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Открыть карту на Циан</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="dialog app-dialog" id="property-dialog" aria-labelledby="property-dialog-title">
+    <h2 class="dialog__title" id="property-dialog-title">Новый объект</h2>
+    <form class="app-form" id="property-form" novalidate>
+      <div class="photo-field">
+        <div class="photo-field__preview" id="photo-preview"><span>Нет фото</span></div>
+        <div class="photo-field__controls">
+          <label class="btn btn-secondary btn-small">
+            Загрузить фото
+            <input id="property-photo" type="file" accept="image/*" hidden />
+          </label>
+          <span class="photo-field__hint">JPG, PNG или WebP</span>
+        </div>
+      </div>
+
+      <label class="field">
+        <span class="field__label">Цена, ₽</span>
+        <input class="field__input" id="property-price" type="number" min="1" required />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Адрес</span>
+        <input class="field__input" id="property-address" type="text" required />
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span class="field__label">Комнаты</span>
+          <select class="field__input" id="property-rooms">
+            <option value="0">Студия</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4+</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">Район</span>
+          <input class="field__input" id="property-district" type="text" required />
+        </label>
+      </div>
+
+      <label class="field">
+        <span class="field__label">Описание</span>
+        <textarea class="field__input" id="property-description" rows="3"></textarea>
+      </label>
+
+      <p class="field__error" id="property-error" hidden></p>
+
+      <div class="dialog__actions">
+        <button class="btn btn-secondary close-dialog" type="button">Отмена</button>
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="dialog app-dialog" id="deal-dialog" aria-labelledby="deal-dialog-title">
+    <h2 class="dialog__title" id="deal-dialog-title">Новая сделка</h2>
+    <form class="app-form" id="deal-form" novalidate>
+      <label class="field">
+        <span class="field__label">Объект</span>
+        <select class="field__input" id="deal-property" required></select>
+      </label>
+
+      <label class="field">
+        <span class="field__label">Клиент</span>
+        <input class="field__input" id="deal-client" type="text" placeholder="Имя клиента" required />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Телефон</span>
+        <input class="field__input" id="deal-phone" type="tel" placeholder="+7 ..." />
+      </label>
+
+      <p class="field__error" id="deal-error" hidden></p>
+
+      <div class="dialog__actions">
+        <button class="btn btn-secondary close-dialog" type="button">Отмена</button>
+        <button class="btn btn-primary" type="submit">Создать сделку</button>
+      </div>
+    </form>
+  </dialog>
+
+  </div>
+
+  <section class="app-lock" id="app-lock" hidden>
+    <h2 class="app-lock__title">Доступ закрыт</h2>
+    <p class="app-lock__text">
+      Кабинет риелтора доступен в пробном режиме на 3 дня или по подписке.
+    </p>
+    <a class="btn btn-primary" href="index.html">На главную</a>
+  </section>
+
+  <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
